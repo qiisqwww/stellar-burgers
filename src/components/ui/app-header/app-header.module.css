@@ -18,6 +18,7 @@
   display: flex;
   text-decoration: none;
   color: var(--text-inactive-color);
+  cursor: pointer;
 }
 
 .link_active {

@@ -14,10 +14,6 @@ export const Feed: FC = () => {
     dispatch(fetchFeed());
   }, [dispatch]);
 
-  if (loading) {
-    return <Preloader />;
-  }
-
   if (error) {
     return <p className='text text_type_main-default'>Ошибка: {error}</p>;
   }

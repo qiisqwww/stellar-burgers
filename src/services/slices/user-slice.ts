@@ -66,6 +66,9 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
   async (_, { rejectWithValue }) => {
     try {
       await logoutApi();
+      // Очистим токены
+      localStorage.removeItem('refreshToken');
+      document.cookie = 'accessToken=; path=/; max-age=0';
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
@@ -155,8 +158,17 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload || 'Login failed';
       })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
+        state.loading = false;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Logout failed';
       })
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
