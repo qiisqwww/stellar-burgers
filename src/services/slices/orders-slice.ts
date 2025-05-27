@@ -90,8 +90,10 @@ const ordersSlice = createSlice({
       })
       .addCase(
         createOrder.fulfilled,
-        (state, action: PayloadAction<{ order: TOrder }>) => {
-          state.orders.unshift(action.payload.order);
+        (state, action: PayloadAction<{ order: TOrder; name: string }>) => {
+          const { order } = action.payload;
+          state.orders.unshift(order);
+          state.currentOrder = order;
           state.loading = false;
         }
       )
@@ -106,7 +108,7 @@ const ordersSlice = createSlice({
       .addCase(
         fetchOrderByNumber.fulfilled,
         (state, action: PayloadAction<TOrder[]>) => {
-          state.currentOrder = action.payload[0] || null;
+          state.currentOrder = null;
           state.loading = false;
         }
       )
