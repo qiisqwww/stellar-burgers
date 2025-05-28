@@ -121,3 +121,4 @@ const ordersSlice = createSlice({
 
 export const { clearCurrentOrder } = ordersSlice.actions;
 export const ordersReducer = ordersSlice.reducer;
+export { initialOrdersState as initialOrderState };

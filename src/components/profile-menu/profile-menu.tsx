@@ -1,24 +1,22 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ProfileMenuUI } from '@ui';
 import { useDispatch } from '../../services/store';
 import { logoutUser } from '../../services/slices/user-slice';
 
 export const ProfileMenu: FC = () => {
-  const { pathname } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const handleLogout = () => {
-    dispatch(logoutUser()).then((action) => {
-      if ('error' in action) {
-        return;
+    dispatch(logoutUser()).then((res) => {
+      if (!('error' in res)) {
+        document.cookie = 'accessToken=; path=/; max-age=0';
+        localStorage.removeItem('refreshToken');
+        console.log('Logged out');
+        navigate('/login', { replace: true });
       }
-
-      localStorage.removeItem('refreshToken');
-      document.cookie = 'accessToken=; path=/; max-age=0';
-      console.log('Logged out');
-      navigate('/login', { replace: true });
     });
   };
 

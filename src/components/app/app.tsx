@@ -1,21 +1,23 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AppHeader } from '@components';
+
 import { ConstructorPage } from '../../pages/constructor-page';
 import { Feed } from '../../pages/feed';
 import { Login } from '../../pages/login';
 import { Register } from '../../pages/register';
 import { ForgotPassword } from '../../pages/forgot-password';
-import { ResetPassword } from '../../pages//reset-password';
+import { ResetPassword } from '../../pages/reset-password';
 import { Profile } from '../../pages/profile';
 import { ProfileOrders } from '../../pages/profile-orders';
-import { NotFound404 } from '../../pages/not-fount-404';
+import { NotFound404 } from '../../pages/not-found-404';
+
 import { OrderInfo } from '../../components/order-info';
 import { IngredientDetails } from '../../components/ingredient-details';
 import { Modal } from '../../components/modal';
-import { RootState, useDispatch, useSelector } from '../../services/store';
+
+import { useDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredients-slice';
-import { Preloader } from '../ui/preloader/preloader';
 import {
   ProtectedRoute,
   PublicRoute
@@ -29,11 +31,10 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
+    <Router>
       <AppHeader />
       <Routes>
-        <Route path='/' element={<ConstructorPage />} />
-        <Route path='/feed' element={<Feed />} />
+        {/* Модальные маршруты */}
         <Route
           path='/feed/:number'
           element={
@@ -42,7 +43,6 @@ const App = () => {
             </Modal>
           }
         />
-
         <Route
           path='/ingredients/:id'
           element={
@@ -54,6 +54,12 @@ const App = () => {
             </Modal>
           }
         />
+
+        {/* Основные страницы */}
+        <Route path='/feed' element={<Feed />} />
+        <Route path='/' element={<ConstructorPage />} />
+
+        {/* Публичные маршруты */}
         <Route
           path='/login'
           element={
@@ -86,6 +92,8 @@ const App = () => {
             </PublicRoute>
           }
         />
+
+        {/* Защищённые маршруты */}
         <Route
           path='/profile'
           element={
@@ -115,9 +123,10 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
         <Route path='*' element={<NotFound404 />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 };
 
