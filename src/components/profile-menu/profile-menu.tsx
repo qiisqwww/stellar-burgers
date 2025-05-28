@@ -10,7 +10,7 @@ export const ProfileMenu: FC = () => {
   const { pathname } = useLocation();
 
   const handleLogout = () => {
-    dispatch(logoutUser()).then(res => {
+    dispatch(logoutUser()).then((res) => {
       if (!('error' in res)) {
         document.cookie = 'accessToken=; path=/; max-age=0';
         localStorage.removeItem('refreshToken');

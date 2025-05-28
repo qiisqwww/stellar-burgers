@@ -18,7 +18,10 @@ import { Modal } from '../../components/modal';
 
 import { useDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredients-slice';
-import { ProtectedRoute, PublicRoute } from '../protected-route/protected-route';
+import {
+  ProtectedRoute,
+  PublicRoute
+} from '../protected-route/protected-route';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,29 +36,32 @@ const App = () => {
       <Routes>
         {/* Модальные маршруты */}
         <Route
-          path="/feed/:number"
+          path='/feed/:number'
           element={
-            <Modal title="Детали заказа" onClose={() => window.history.back()}>
+            <Modal title='Детали заказа' onClose={() => window.history.back()}>
               <OrderInfo />
             </Modal>
           }
         />
         <Route
-          path="/ingredients/:id"
+          path='/ingredients/:id'
           element={
-            <Modal title="Детали ингредиента" onClose={() => window.history.back()}>
+            <Modal
+              title='Детали ингредиента'
+              onClose={() => window.history.back()}
+            >
               <IngredientDetails />
             </Modal>
           }
         />
 
         {/* Основные страницы */}
-        <Route path="/feed" element={<Feed />} />
-        <Route path="/" element={<ConstructorPage />} />
+        <Route path='/feed' element={<Feed />} />
+        <Route path='/' element={<ConstructorPage />} />
 
         {/* Публичные маршруты */}
         <Route
-          path="/login"
+          path='/login'
           element={
             <PublicRoute>
               <Login />
@@ -63,7 +69,7 @@ const App = () => {
           }
         />
         <Route
-          path="/register"
+          path='/register'
           element={
             <PublicRoute>
               <Register />
@@ -71,7 +77,7 @@ const App = () => {
           }
         />
         <Route
-          path="/forgot-password"
+          path='/forgot-password'
           element={
             <PublicRoute>
               <ForgotPassword />
@@ -79,7 +85,7 @@ const App = () => {
           }
         />
         <Route
-          path="/reset-password"
+          path='/reset-password'
           element={
             <PublicRoute>
               <ResetPassword />
@@ -89,7 +95,7 @@ const App = () => {
 
         {/* Защищённые маршруты */}
         <Route
-          path="/profile"
+          path='/profile'
           element={
             <ProtectedRoute>
               <Profile />
@@ -97,7 +103,7 @@ const App = () => {
           }
         />
         <Route
-          path="/profile/orders"
+          path='/profile/orders'
           element={
             <ProtectedRoute>
               <ProfileOrders />
@@ -105,17 +111,20 @@ const App = () => {
           }
         />
         <Route
-          path="/profile/orders/:number"
+          path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <Modal title="Детали заказа" onClose={() => window.history.back()}>
+              <Modal
+                title='Детали заказа'
+                onClose={() => window.history.back()}
+              >
                 <OrderInfo />
               </Modal>
             </ProtectedRoute>
           }
         />
 
-        <Route path="*" element={<NotFound404 />} />
+        <Route path='*' element={<NotFound404 />} />
       </Routes>
     </Router>
   );
