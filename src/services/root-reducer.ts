@@ -6,10 +6,10 @@ import { userReducer } from './slices/user-slice';
 import { constructorReducer } from './slices/constructor-slice';
 
 export const rootReducer = combineReducers({
-  user: userReducer,
-  orders: ordersReducer,
   ingredients: ingredientsReducer,
   feed: feedReducer,
+  orders: ordersReducer,
+  user: userReducer,
   constructorBurger: constructorReducer
 });
 
