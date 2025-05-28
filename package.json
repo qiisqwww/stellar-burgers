@@ -90,11 +90,13 @@
   },
   "scripts": {
     "start": "webpack serve --mode=development --port=4000",
+
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
     "lint:fix": "npm run lint -- --fix",
     "format": "prettier ./src --write",
+
     "cypress:open": "cypress open",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -102,7 +104,6 @@
     "cy:open": "cypress open",
     "test:e2e": "start-server-and-test start http://localhost:4000 cy:run",
     "cy:open:chrome": "cypress open --browser chrome",
-
     "test:coverage": "jest --coverage",
     "e2e:open": "start-server-and-test start http://localhost:4000 cy:open"
   },

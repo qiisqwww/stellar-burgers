@@ -1,35 +1,38 @@
-import { expect, test, describe } from '@jest/globals';
-import { fetchIngredients, ingredientsReducer } from './ingredients-slice';
+import { expect, test, describe, jest } from '@jest/globals';
 import { configureStore } from '@reduxjs/toolkit';
-import * as api from '../../utils/burger-api'; // импортируем модуль с API для моков
+import { fetchIngredients, ingredientsReducer, initialIngredientsState } from './ingredients-slice';
+import * as api from '../../utils/burger-api';
+import type { TIngredient } from '../../utils/types';
 
+// Мокаем весь модуль API, чтобы контролировать ответы в thunk
+jest.mock('../../utils/burger-api');
+
+// Утилита для создания тестового Redux store с нашим редьюсером
 const setupStore = () =>
   configureStore({
-    reducer: {
-      ingredients: ingredientsReducer
-    }
+    reducer: { ingredients: ingredientsReducer },
+    preloadedState: { ingredients: initialIngredientsState },
   });
 
 describe('Тесты thunk fetchIngredients', () => {
   test('при rejected с undefined payload устанавливается дефолтная ошибка', () => {
+    // При отклонении без payload должно выставляться дефолтное сообщение об ошибке
     const store = setupStore();
 
-    // Диспатчим rejected с payload === undefined
     store.dispatch({
       type: fetchIngredients.rejected.type,
       payload: undefined,
-      error: { message: 'some error' }
+      error: { message: 'some error' },
     });
 
     const state = store.getState().ingredients;
     expect(state.loading).toBe(false);
-    expect(state.error).toBe('Failed to fetch ingredients'); // вот эта ветка и покрывается
+    expect(state.error).toBe('Failed to fetch ingredients');
   });
-  test('fetchIngredients успешно получает ингредиенты', async () => {
-    const store = setupStore();
 
-    // Мокаем getIngredientsApi чтобы вернуть тестовые данные
-    const mockedData = [
+  test('fetchIngredients успешно получает ингредиенты', async () => {
+    // Мокаем API для возврата списка ингредиентов
+    const mockedData: TIngredient[] = [
       {
         _id: '1',
         name: 'Test Ingredient',
@@ -41,12 +44,12 @@ describe('Тесты thunk fetchIngredients', () => {
         price: 100,
         image: 'image.png',
         image_mobile: 'image_mobile.png',
-        image_large: 'image_large.png'
-      }
+        image_large: 'image_large.png',
+      },
     ];
     jest.spyOn(api, 'getIngredientsApi').mockResolvedValue(mockedData);
 
-    // Диспатчим thunk (он вызовет мок)
+    const store = setupStore();
     await store.dispatch(fetchIngredients());
 
     const state = store.getState().ingredients;
@@ -56,15 +59,11 @@ describe('Тесты thunk fetchIngredients', () => {
   });
 
   test('fetchIngredients обрабатывает ошибку', async () => {
-    const store = setupStore();
-
-    // Мокаем getIngredientsApi чтобы выбросить ошибку
+    // Мокаем API на выброс ошибки
     const errorMessage = 'Ошибка сети';
-    jest
-      .spyOn(api, 'getIngredientsApi')
-      .mockRejectedValue(new Error(errorMessage));
+    jest.spyOn(api, 'getIngredientsApi').mockRejectedValue(new Error(errorMessage));
 
-    // Диспатчим thunk (он вызовет мок и упадет в catch)
+    const store = setupStore();
     await store.dispatch(fetchIngredients());
 
     const state = store.getState().ingredients;

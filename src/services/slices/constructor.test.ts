@@ -1,5 +1,8 @@
 import { expect, test, describe, jest } from '@jest/globals';
-import {constructorReducer,
+import { nanoid } from '@reduxjs/toolkit';
+import type { ConstructorState } from './constructor-slice';
+import {
+  constructorReducer,
   addIngredient,
   removeIngredient,
   moveIngredient,
@@ -7,20 +10,20 @@ import {constructorReducer,
   clearBun,
   setBun,
 } from './constructor-slice';
-import { nanoid } from '@reduxjs/toolkit';
-import { TConstructorIngredient } from 'src/utils/types';
-import type { ConstructorState } from './constructor-slice';
 
+// Мокаем nanoid для предсказуемых ID в тестах
 jest.mock('@reduxjs/toolkit', () => {
-  const actual = jest.requireActual<typeof import('@reduxjs/toolkit')>('@reduxjs/toolkit');
+  const actual = jest.requireActual<typeof import('@reduxjs/toolkit')>(
+    '@reduxjs/toolkit'
+  );
   return {
     ...actual,
     nanoid: jest.fn(() => 'mockedID'),
   };
 });
 
-
 describe('constructorReducer', () => {
+  // Общий начальный стейт для всех тестов
   const initialState: ConstructorState = {
     bun: {
       _id: '643d69a5c3f7b9001cfa093c',
@@ -69,6 +72,7 @@ describe('constructorReducer', () => {
   };
 
   test('добавление ингредиента', () => {
+    // Проверяем, что к стейту добавляется новый ингредиент с сгенерированным ID
     const ingredient = {
       _id: '643d69a5c3f7b9001cfa093e',
       name: 'Филе Люминесцентного тетраодонтимформа',
@@ -87,19 +91,19 @@ describe('constructorReducer', () => {
       ...initialState,
       ingredients: [
         ...initialState.ingredients,
-        { ...ingredient, id: 'mockedID' }
+        { ...ingredient, id: 'mockedID' }, // Ожидаем присвоение мокированного ID
       ],
     };
 
     const newState = constructorReducer(initialState, addIngredient(ingredient));
 
-    expect(nanoid).toHaveBeenCalled();
+    expect(nanoid).toHaveBeenCalled(); // Должен вызваться генератор ID
     expect(newState).toEqual(expectedState);
   });
 
   test('удаление ингредиента', () => {
+    // Проверяем удаление по ID
     const idToRemove = '1';
-
     const expectedState: ConstructorState = {
       ...initialState,
       ingredients: initialState.ingredients.filter(i => i.id !== idToRemove),
@@ -110,6 +114,7 @@ describe('constructorReducer', () => {
   });
 
   test('перемещение ингредиента', () => {
+    // Проверяем перестановку элементов массива ingredients
     const expectedState: ConstructorState = {
       ...initialState,
       ingredients: [
@@ -123,6 +128,7 @@ describe('constructorReducer', () => {
   });
 
   test('очистка конструктора', () => {
+    // Проверяем сброс всего конструктора
     const expectedState: ConstructorState = {
       bun: null,
       ingredients: [],
@@ -133,6 +139,7 @@ describe('constructorReducer', () => {
   });
 
   test('очистка булки', () => {
+    // Проверяем удаление булки из стейта
     const expectedState: ConstructorState = {
       ...initialState,
       bun: null,
@@ -143,6 +150,7 @@ describe('constructorReducer', () => {
   });
 
   test('установка булки', () => {
+    // Проверяем установку новой булки с генерацией ID
     const newBun = {
       _id: '643d69a5c3f7b9001cfa0999',
       name: 'Новая булка',
@@ -154,12 +162,12 @@ describe('constructorReducer', () => {
       price: 100,
       image: '',
       image_mobile: '',
-      image_large: ''
+      image_large: '',
     };
 
     const expectedState: ConstructorState = {
       ...initialState,
-      bun: { ...newBun, id: 'mockedID' }
+      bun: { ...newBun, id: 'mockedID' }, // Мокированный ID для булки
     };
 
     const newState = constructorReducer(initialState, setBun(newBun));
