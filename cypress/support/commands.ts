@@ -38,6 +38,10 @@ import { title } from "process";
 //     }
 //   }
 // 
-Cypress.Commands.add('addIngredient', (type) => {
-  cy.get(`[data-cy="${type}"]`).children().first().children('button').click();
+Cypress.Commands.add('addIngredient', (name: string) => {
+  cy.get('[data-cy="ingredient-item"]')
+    .contains(name)
+    .trigger('dragstart');
+  cy.get('[data-cy="constructor"]')
+    .trigger('drop');
 });
